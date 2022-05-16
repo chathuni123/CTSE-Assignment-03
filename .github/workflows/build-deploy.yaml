@@ -1,0 +1,29 @@
+name: Docker Build Deploy
+on:
+  push:
+    branches: [ main ]
+  
+
+jobs:
+
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Run Shell Script
+      run: echo commit hash is ${{ github.sha }}
+    - name: Login to Docker Hub
+      uses: docker/login-action@v1
+      with:
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_TOKEN }}
+      
+    - name: Build and push
+      uses: docker/build-push-action@v2
+      with:
+        context: .
+        file: ./Dockerfile
+        push: true
+        tags: ${{ secrets.DOCKER_HUB_USERNAME }}/2022CTSE-Assignment03:${{ github.sha }}
